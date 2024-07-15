@@ -1,4 +1,4 @@
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyCfkf9Xo67I4hsRSQV8GylXNAQeetiWorA",
     authDomain: "kwitter-project-90bd3.firebaseapp.com",
     databaseURL: "https://kwitter-project-90bd3-default-rtdb.firebaseio.com",
@@ -7,15 +7,14 @@ var firebaseConfig = {
     messagingSenderId: "391519965352",
     appId: "1:391519965352:web:1d8b3081e045199468329d"
 };
-  // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
+firebase.initializeApp(firebaseConfig)
 var user_name = ""
 var password1 = ""
 function addUser(){
     user_name = document.getElementById("user_name").value
     password1 = document.getElementById("passward_value").value
     localStorage.setItem("User Name", user_name)
+    localStorage.setItem("Password", password1)
     if (user_name == ""){
         document.getElementById("error").style.color = "Red"
         document.getElementById("error").innerHTML = "Error, Please enter username"
@@ -31,14 +30,43 @@ function addUser(){
             document.getElementById("error").innerHTML = ""
         }, 1000)
     }else{
+        
         window.location = "index2.html"
     }
 }
+window.addEventListener("DOMContentLoaded", loadUser)
 function loadUser(){
-    document.getElementById("user2_name").innerText = localStorage.getItem("User Name")
-    firebase.database().ref("/").child(user_name).update({
-        username: user_name,
-        password: password1,
+    firebase.database().ref("/").child("user").update({
+        user_namez : localStorage.getItem("User Name"),
+        password: localStorage.getItem("Password")
     })
+    document.getElementById("user2_name").innerText = localStorage.getItem("User Name")
 }
+
+function getData() {firebase.database().ref("/").on('value',
+    function(snapshot) {document.getElementById("rooms").innerHTML =
+    "";snapshot.forEach(function(childSnapshot) {childKey = childSnapshot.key;
+    Room_names = childKey;
+    //Start code
+    console.log(Room_names)
+    var row = "<p style='width:90%; height:400px;border-radius: 25px; background-color: rgba(0, 0, 0, 0);margin:35px;color:white;' onclick='loadRoom(this.id)' id='" + Room_names+"'>"+"#"+Room_names+"</p>"
+    document.getElementById("rooms").innerHTML = row;
+    //End code
+});});}
+getData()
+function Add(){
+    room_name = document.getElementById("room_name").value 
+    firebase.database().ref("/").child(room_name).update({
+        purpose : "rooms"
+    })
+    localStorage.setItem("user_name", room_name)
+    window.location = "kwitter_page.html"
+}
+
+
+function loadRoom(names){
+    localStorage.setItem("Room_Name", names)
+    window.location = "kwitter_page.html"
+}
+
 
